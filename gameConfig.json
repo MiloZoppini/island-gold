@@ -1,0 +1,79 @@
+{
+  "game": {
+    "name": "Island Gold",
+    "version": "1.0.0",
+    "description": "Un gioco multiplayer di caccia al tesoro su un'isola, costruito con Three.js.",
+    "platform": {
+      "development": "GitHub",
+      "deployment": "Render.com"
+    }
+  },
+  "world": {
+    "size": {
+      "width": 1000,
+      "depth": 1000
+    },
+    "skyColor": "0x87CEEB",
+    "fogDistance": 500
+  },
+  "players": {
+    "type": "multiplayer",
+    "appearance": "personaggi in stile Minecraft",
+    "movement": {
+      "controls": "WASD + mouse",
+      "speed": 5,
+      "jump": 10
+    },
+    "inventory": {
+      "maxItems": 10,
+      "startingItems": []
+    }
+  },
+  "objective": {
+    "main": "Raccogliere più tesori degli altri giocatori",
+    "tesori": {
+      "tipo": "oro",
+      "locations": "nascosti in vari punti dell'isola",
+      "quantità": 20,
+      "respawn": false,
+      "valore": {
+        "piccolo": 10,
+        "medio": 25,
+        "grande": 50
+      }
+    }
+  },
+  "rules": {
+    "condizione_vittoria": "Il giocatore con più tesori alla fine del tempo vince",
+    "durata_partita": 600,
+    "min_giocatori": 1,
+    "max_giocatori": 10,
+    "interazione": {
+      "raccolta": "I giocatori devono avvicinarsi ai tesori per raccoglierli",
+      "competizione": "Il primo giocatore che raggiunge un tesoro lo reclama"
+    }
+  },
+  "technical": {
+    "dependencies": ["Three.js", "Socket.io", "Express"],
+    "hosting": {
+      "github": "Repository per il codice sorgente",
+      "render": "Istanza distribuita su Render.com"
+    },
+    "networking": {
+      "updateRate": 30,
+      "interpolation": true,
+      "maxPlayers": 16
+    }
+  },
+  "player": {
+    "speed": 10,
+    "jumpForce": 15,
+    "height": 2,
+    "radius": 0.5,
+    "spawnPoint": {
+      "x": 0,
+      "y": 10,
+      "z": 0
+    }
+  }
+} 
