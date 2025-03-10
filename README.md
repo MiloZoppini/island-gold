@@ -1,19 +1,50 @@
-# Island Gold
+# Island Gold - Caccia al Tesoro Multiplayer
 
-Un gioco multiplayer di caccia al tesoro in stile Minecraft costruito con Three.js.
+Un gioco 3D multiplayer di caccia al tesoro ambientato su un'isola generata proceduralmente.
+
+## Caratteristiche
+
+- **Mondo 3D Immersivo**: Esplora un'isola generata proceduralmente con terreno realistico, acqua, vegetazione e rocce.
+- **Multiplayer in Tempo Reale**: Competi con altri giocatori per trovare i tesori nascosti.
+- **Grafica Avanzata**: Effetti di acqua realistica, illuminazione dinamica, particelle e altro.
+- **Audio Coinvolgente**: Effetti sonori e musica di sottofondo per un'esperienza immersiva.
+- **Interfaccia Utente Intuitiva**: HUD chiaro e reattivo con indicatori di salute, punteggio e notifiche.
+
+## Tecnologie Utilizzate
+
+- **Three.js**: Per la grafica 3D
+- **Socket.io**: Per la comunicazione in tempo reale
+- **Express**: Per il server web
+- **SimplexNoise**: Per la generazione procedurale del terreno
+
+## Come Giocare
+
+1. Visita [Island Gold](https://teaser-island-server.onrender.com)
+2. Inserisci il tuo nome
+3. Clicca su "Inizia Gioco"
+4. Usa WASD per muoverti, il mouse per guardare intorno
+5. Raccogli i tesori avvicinandoti ad essi
+6. Vince chi raccoglie più tesori!
+
+## Sviluppo
+
+Il progetto è strutturato in modo modulare con:
+
+- Sistema di eventi per la comunicazione tra componenti
+- Gestione degli input da tastiera e mouse
+- Sistema audio per effetti sonori e musica
+- Interfaccia utente modulare
+- Generazione procedurale della mappa
+- Sistema del giocatore con fisica e controlli
+- Sistema dei tesori con effetti visivi
+
+## Versione
+
+Versione attuale: 1.0.1
 
 ## Descrizione
 
 Island Gold è un gioco multiplayer in cui i giocatori esplorano un'isola alla ricerca di tesori. L'obiettivo è raccogliere più oro degli altri giocatori entro il tempo limite. Il gioco è costruito con Three.js per la grafica 3D e Socket.io per la funzionalità multiplayer.
-
-## Caratteristiche
-
-- Ambiente 3D in stile Minecraft con visuale in prima persona
-- Modalità multiplayer in tempo reale
-- Generazione procedurale dell'isola con terreno, alberi, rocce e acqua
-- Sistema di raccolta tesori
-- Classifica dei giocatori e sistema di punteggio
-- Timer di gioco con reset automatico
 
 ## Requisiti
 
@@ -55,13 +86,6 @@ npm start
 - Mouse: Guarda intorno
 - Barra spaziatrice: Salta
 - Avvicinati ai tesori per raccoglierli
-
-## Tecnologie utilizzate
-
-- Three.js: Rendering 3D
-- Socket.io: Comunicazione in tempo reale
-- Express: Server web
-- Webpack: Bundling
 
 ## Deployment
 
