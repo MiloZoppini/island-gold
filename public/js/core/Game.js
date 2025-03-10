@@ -22,59 +22,83 @@ class Game {
         this.gameTime = 300; // Tempo di gioco in secondi (5 minuti)
         this.gameTimer = null; // Timer per il countdown
         
+        // Elementi UI
+        this.loadingScreen = document.getElementById('loading-screen');
+        this.startScreen = document.getElementById('start-screen');
+        this.gameUI = document.getElementById('game-ui');
+        this.startButton = document.getElementById('start-button');
+        
         // Inizializza l'UI Manager
         this.ui = new UIManager();
-        
-        // Inizializza la scena
-        this.setupScene();
         
         // Configura i gestori degli eventi Socket.IO
         this.setupSocketHandlers();
         
-        // Avvia il loop di animazione
-        this.animate();
+        // Inizializza la scena
+        this.setupScene().then(() => {
+            // Nascondi la schermata di caricamento
+            this.loadingScreen.classList.add('hidden');
+            // Mostra la schermata iniziale
+            this.startScreen.classList.remove('hidden');
+        }).catch(error => {
+            console.error('Errore durante l\'inizializzazione:', error);
+            this.ui.showNotification('Errore durante l\'inizializzazione del gioco', 'error');
+        });
+        
+        // Gestisci il click sul pulsante Start
+        this.startButton.addEventListener('click', () => this.startGame());
     }
 
-    setupScene() {
-        // Renderer avanzato con post-processing
-        this.renderer = new THREE.WebGLRenderer({ 
-            antialias: true,
-            powerPreference: "high-performance",
-            precision: "highp",
-            stencil: false
-        });
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.renderer.setClearColor(0x87CEEB); // Colore di sfondo azzurro cielo
-        this.renderer.shadowMap.enabled = true;
-        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        this.renderer.outputEncoding = THREE.sRGBEncoding;
-        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        this.renderer.toneMappingExposure = 1.2;
-        this.renderer.physicallyCorrectLights = true;
-        document.getElementById('game-container').appendChild(this.renderer.domElement);
-
-        // Scene
-        this.scene = new THREE.Scene();
-        this.scene.fog = null;
-
-        // Camera di fallback per il rendering iniziale
-        this.fallbackCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
-        this.fallbackCamera.position.set(0, 10, 20);
-        this.fallbackCamera.lookAt(0, 0, 0);
-
-        // Gestione del ridimensionamento della finestra
-        window.addEventListener('resize', () => {
-            if (this.localPlayer && this.localPlayer.camera) {
-                this.localPlayer.camera.aspect = window.innerWidth / window.innerHeight;
-                this.localPlayer.camera.updateProjectionMatrix();
-            }
-            this.fallbackCamera.aspect = window.innerWidth / window.innerHeight;
-            this.fallbackCamera.updateProjectionMatrix();
+    async setupScene() {
+        try {
+            // Renderer avanzato con post-processing
+            this.renderer = new THREE.WebGLRenderer({ 
+                antialias: true,
+                powerPreference: "high-performance",
+                precision: "highp",
+                stencil: false
+            });
             this.renderer.setSize(window.innerWidth, window.innerHeight);
-        });
+            this.renderer.setClearColor(0x87CEEB); // Colore di sfondo azzurro cielo
+            this.renderer.shadowMap.enabled = true;
+            this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            this.renderer.outputEncoding = THREE.sRGBEncoding;
+            this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            this.renderer.toneMappingExposure = 1.2;
+            this.renderer.physicallyCorrectLights = true;
+            document.getElementById('game-container').appendChild(this.renderer.domElement);
 
-        // Inizializza il mondo di gioco
-        this.world = new GameWorld(this.scene);
+            // Scene
+            this.scene = new THREE.Scene();
+            this.scene.fog = null;
+
+            // Camera di fallback per il rendering iniziale
+            this.fallbackCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+            this.fallbackCamera.position.set(0, 10, 20);
+            this.fallbackCamera.lookAt(0, 0, 0);
+
+            // Gestione del ridimensionamento della finestra
+            window.addEventListener('resize', () => {
+                if (this.localPlayer && this.localPlayer.camera) {
+                    this.localPlayer.camera.aspect = window.innerWidth / window.innerHeight;
+                    this.localPlayer.camera.updateProjectionMatrix();
+                }
+                this.fallbackCamera.aspect = window.innerWidth / window.innerHeight;
+                this.fallbackCamera.updateProjectionMatrix();
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+
+            // Inizializza il mondo di gioco
+            this.world = new GameWorld(this.scene);
+            
+            // Avvia il loop di animazione
+            this.animate();
+            
+            console.log('Scena inizializzata con successo');
+        } catch (error) {
+            console.error('Errore durante l\'inizializzazione della scena:', error);
+            throw error;
+        }
     }
 
     animate() {
@@ -110,9 +134,41 @@ class Game {
             this.ui.showNotification('Disconnesso dal server', 'error');
         });
     }
+
+    startGame() {
+        try {
+            // Nascondi la schermata iniziale
+            this.startScreen.classList.add('hidden');
+            // Mostra l'interfaccia di gioco
+            this.gameUI.classList.remove('hidden');
+            
+            // Inizia la partita
+            this.gameStarted = true;
+            this.inLobby = false;
+            
+            // Emetti l'evento di inizio partita
+            this.socket.emit('game:start');
+            
+            console.log('Gioco avviato con successo');
+            this.ui.showNotification('Partita iniziata!', 'success');
+        } catch (error) {
+            console.error('Errore durante l\'avvio del gioco:', error);
+            this.ui.showNotification('Errore durante l\'avvio del gioco', 'error');
+        }
+    }
 }
 
 // Avvia il gioco quando la pagina è caricata
 window.addEventListener('load', () => {
-    new Game();
+    try {
+        new Game();
+    } catch (error) {
+        console.error('Errore durante l\'inizializzazione del gioco:', error);
+        // Mostra un messaggio di errore all'utente
+        const loadingText = document.querySelector('.loading-text');
+        if (loadingText) {
+            loadingText.textContent = 'Errore durante il caricamento del gioco';
+            loadingText.style.color = 'red';
+        }
+    }
 }); 
