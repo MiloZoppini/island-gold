@@ -16,88 +16,81 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-  <div id="loading-screen">
-    <div class="loading-container">
+  <!-- Container principale del gioco -->
+  <div id="game-container"></div>
+
+  <!-- Schermata di caricamento -->
+  <div id="loading-screen" class="screen">
+    <div class="loading-content">
       <h1>Island Gold</h1>
-      <div class="progress-bar">
-        <div class="progress-fill"></div>
+      <div class="loading-bar">
+        <div class="loading-progress"></div>
       </div>
       <p class="loading-text">Caricamento...</p>
     </div>
   </div>
 
-  <div id="start-screen">
-    <div class="start-container">
+  <!-- Schermata iniziale -->
+  <div id="start-screen" class="screen hidden">
+    <div class="start-content">
       <h1>Island Gold</h1>
       <p>Un'avventura di caccia al tesoro multiplayer</p>
-      <button id="start-button">Inizia a Giocare</button>
-      <div class="instructions">
-        <h2>Istruzioni:</h2>
-        <p>Muoviti con i tasti WASD</p>
-        <p>Guarda intorno con il mouse</p>
-        <p>Salta con la barra spaziatrice</p>
-        <p>Raccogli i tesori avvicinandoti ad essi</p>
-        <p>Vince chi raccoglie più tesori entro il tempo limite!</p>
-      </div>
+      <input type="text" id="player-name" placeholder="Inserisci il tuo nome">
+      <button id="start-button">Inizia Gioco</button>
     </div>
   </div>
 
+  <!-- Interfaccia di gioco -->
   <div id="game-ui" class="hidden">
-    <div class="hud">
-      <div class="score-container">
-        <span>Oro: </span><span id="player-score">0</span>
-      </div>
-      <div class="time-container">
-        <span>Tempo: </span><span id="game-time">10:00</span>
-      </div>
-      <div class="players-container">
-        <span>Giocatori: </span><span id="player-count">1</span>
-      </div>
+    <!-- Barra della salute -->
+    <div id="health-container">
+      <div id="health-bar"></div>
     </div>
-    <div class="crosshair">+</div>
+
+    <!-- Punteggio -->
+    <div id="score-display">Punteggio: 0</div>
+
+    <!-- Area notifiche -->
+    <div id="notification-area"></div>
+
+    <!-- Pannello di debug -->
+    <div id="debug-panel" class="hidden"></div>
   </div>
 
-  <div id="game-over" class="hidden">
-    <div class="game-over-container">
-      <h1>Partita Terminata!</h1>
-      <div id="winner-display"></div>
-      <div id="final-scores"></div>
-      <button id="play-again-button">Gioca Ancora</button>
-    </div>
-  </div>
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  
+  <!-- Core -->
+  <script src="js/core/EventBus.js" type="module"></script>
+  <script src="js/core/InputManager.js" type="module"></script>
+  <script src="js/core/Game.js" type="module"></script>
 
-  <div id="game-container"></div>
+  <!-- Scene -->
+  <script src="js/scene/SceneManager.js" type="module"></script>
+  <script src="js/scene/Map.js" type="module"></script>
 
-  <!-- Script di configurazione e utility -->
-  <script src="js/config.js"></script>
-  <script src="js/socket.io.js"></script>
+  <!-- Audio -->
+  <script src="js/audio/AudioManager.js" type="module"></script>
 
-  <!-- Script del core del gioco -->
-  <script src="js/core/Game.js"></script>
-  <script src="js/core/terrain.js"></script>
+  <!-- UI -->
+  <script src="js/ui/UIManager.js" type="module"></script>
 
-  <!-- Script della scena -->
-  <script src="js/scene/Lighting.js"></script>
-  <script src="js/scene/world.js"></script>
+  <!-- Entities -->
+  <script src="js/entities/Player.js" type="module"></script>
+  <script src="js/entities/Treasure.js" type="module"></script>
 
-  <!-- Script degli effetti -->
-  <script src="js/effects/Weather.js"></script>
-  <script src="js/effects/water.js"></script>
-  <script src="js/effects/particles.js"></script>
+  <!-- Utils -->
+  <script src="js/utils/PerformanceMonitor.js" type="module"></script>
+  <script src="js/utils/QualitySettings.js" type="module"></script>
 
-  <!-- Script dell'interfaccia utente -->
-  <script src="js/ui/UIManager.js"></script>
-  <script src="js/ui/DebugPanel.js"></script>
-  <script src="js/ui/HealthDisplay.js"></script>
-  <script src="js/ui/InstructionsPanel.js"></script>
-  <script src="js/ui/LandingPage.js"></script>
-  <script src="js/ui/LeaderboardDisplay.js"></script>
-  <script src="js/ui/Notifications.js"></script>
-  <script src="js/ui/PlayerCountDisplay.js"></script>
-  <script src="js/ui/SettingsMenu.js"></script>
+  <!-- Water effect -->
+  <script src="js/water.js"></script>
 
-  <!-- Script del giocatore e dei tesori -->
-  <script src="js/player.js"></script>
-  <script src="js/treasure.js"></script>
+  <!-- Terrain -->
+  <script src="js/terrain.js"></script>
+
+  <!-- Particles -->
+  <script src="js/particles.js"></script>
 </body>
 </html> 

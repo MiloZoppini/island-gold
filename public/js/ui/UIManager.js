@@ -1,90 +1,144 @@
 class UIManager {
-    constructor() {
-        this.components = {
-            debugPanel: null,
-            healthDisplay: null,
-            instructionsPanel: null,
-            landingPage: null,
-            leaderboardDisplay: null,
-            notifications: null,
-            playerCountDisplay: null,
-            settingsMenu: null
+    constructor(eventBus) {
+        this.eventBus = eventBus;
+        this.elements = {
+            loadingScreen: document.getElementById('loading-screen'),
+            startScreen: document.getElementById('start-screen'),
+            gameUI: document.getElementById('game-ui'),
+            healthBar: document.getElementById('health-bar'),
+            scoreDisplay: document.getElementById('score-display'),
+            notificationArea: document.getElementById('notification-area'),
+            debugPanel: document.getElementById('debug-panel')
         };
-        
-        this.currentScreen = null;
-        this.isDebugMode = false;
+
+        this.setupEventListeners();
     }
 
-    init() {
-        // Inizializza tutti i componenti UI
-        this.components.debugPanel = new DebugPanel();
-        this.components.healthDisplay = new HealthDisplay();
-        this.components.instructionsPanel = new InstructionsPanel();
-        this.components.landingPage = new LandingPage();
-        this.components.leaderboardDisplay = new LeaderboardDisplay();
-        this.components.notifications = new Notifications();
-        this.components.playerCountDisplay = new PlayerCountDisplay();
-        this.components.settingsMenu = new SettingsMenu();
+    setupEventListeners() {
+        // Ascolta gli eventi di aggiornamento della salute
+        this.eventBus.on('player.health.updated', (data) => {
+            this.updateHealthBar(data.health, data.maxHealth);
+        });
 
-        // Nascondi tutti i componenti all'inizio
-        this.hideAllScreens();
-        
-        // Mostra la landing page
-        this.showScreen('landingPage');
+        // Ascolta gli eventi di aggiornamento del punteggio
+        this.eventBus.on('score.updated', (score) => {
+            this.updateScore(score);
+        });
 
-        // Aggiungi listener per i tasti di scelta rapida
-        document.addEventListener('keydown', (e) => this.handleKeyPress(e));
-    }
+        // Ascolta gli eventi di notifica
+        this.eventBus.on('notification', (data) => {
+            this.showNotification(data.message, data.type, data.duration);
+        });
 
-    showScreen(screenName) {
-        if (this.currentScreen) {
-            this.components[this.currentScreen].hide();
-        }
-        
-        this.components[screenName].show();
-        this.currentScreen = screenName;
-    }
-
-    hideAllScreens() {
-        Object.values(this.components).forEach(component => {
-            if (component && component.hide) {
-                component.hide();
-            }
+        // Ascolta gli eventi di debug
+        this.eventBus.on('debug.metrics', (metrics) => {
+            this.updateDebugInfo(metrics);
         });
     }
 
-    toggleDebugMode() {
-        this.isDebugMode = !this.isDebugMode;
-        this.components.debugPanel.toggle(this.isDebugMode);
+    showLoadingScreen() {
+        this.elements.loadingScreen.classList.remove('hidden');
+        this.elements.startScreen.classList.add('hidden');
+        this.elements.gameUI.classList.add('hidden');
     }
 
-    showNotification(message, type = 'info', duration = 3000) {
-        this.components.notifications.show(message, type, duration);
+    showStartScreen() {
+        this.elements.loadingScreen.classList.add('hidden');
+        this.elements.startScreen.classList.remove('hidden');
+        this.elements.gameUI.classList.add('hidden');
     }
 
-    updatePlayerCount(count) {
-        this.components.playerCountDisplay.update(count);
+    showGameUI() {
+        this.elements.loadingScreen.classList.add('hidden');
+        this.elements.startScreen.classList.add('hidden');
+        this.elements.gameUI.classList.remove('hidden');
     }
 
-    updateLeaderboard(scores) {
-        this.components.leaderboardDisplay.update(scores);
-    }
-
-    handleKeyPress(event) {
-        switch(event.key) {
-            case 'Escape':
-                this.components.settingsMenu.toggle();
-                break;
-            case 'Tab':
-                if (event.ctrlKey || event.metaKey) {
-                    event.preventDefault();
-                    this.toggleDebugMode();
-                }
-                break;
+    updateHealthBar(health, maxHealth) {
+        if (!this.elements.healthBar) return;
+        
+        const percentage = (health / maxHealth) * 100;
+        this.elements.healthBar.style.width = `${percentage}%`;
+        
+        // Cambia il colore in base alla salute
+        if (percentage > 60) {
+            this.elements.healthBar.style.backgroundColor = '#4CAF50';
+        } else if (percentage > 30) {
+            this.elements.healthBar.style.backgroundColor = '#FFC107';
+        } else {
+            this.elements.healthBar.style.backgroundColor = '#F44336';
         }
     }
 
-    updateHealth(value) {
-        this.components.healthDisplay.update(value);
+    updateScore(score) {
+        if (!this.elements.scoreDisplay) return;
+        this.elements.scoreDisplay.textContent = `Punteggio: ${score}`;
     }
-} 
+
+    showNotification(message, type = 'info', duration = 3000) {
+        if (!this.elements.notificationArea) return;
+
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+
+        this.elements.notificationArea.appendChild(notification);
+
+        // Rimuovi la notifica dopo la durata specificata
+        setTimeout(() => {
+            notification.classList.add('fade-out');
+            setTimeout(() => {
+                notification.remove();
+            }, 300);
+        }, duration);
+    }
+
+    updateDebugInfo(metrics) {
+        if (!this.elements.debugPanel) return;
+
+        const debugInfo = `
+            FPS: ${metrics.fps}<br>
+            Frame Time: ${metrics.frameTime.toFixed(2)}ms<br>
+            Objects: ${metrics.objectCount}<br>
+            Triangles: ${metrics.triangleCount}<br>
+            Memory: ${(metrics.jsHeapSizeUsed / 1048576).toFixed(2)}MB
+        `;
+
+        this.elements.debugPanel.innerHTML = debugInfo;
+    }
+
+    showInstructions() {
+        const instructions = document.createElement('div');
+        instructions.className = 'instructions';
+        instructions.innerHTML = `
+            <h2>Istruzioni</h2>
+            <p>Controlli:</p>
+            <ul>
+                <li>W/S - Avanti/Indietro</li>
+                <li>A/D - Sinistra/Destra</li>
+                <li>Mouse - Guarda intorno</li>
+                <li>Click Sinistro - Spara</li>
+                <li>Spazio - Salta</li>
+                <li>Shift - Accovacciati</li>
+            </ul>
+            <button id="start-game-btn">Inizia Gioco</button>
+        `;
+
+        document.body.appendChild(instructions);
+
+        const startButton = instructions.querySelector('#start-game-btn');
+        startButton.addEventListener('click', () => {
+            instructions.remove();
+            this.eventBus.emit('game.start');
+        });
+    }
+
+    hideInstructions() {
+        const instructions = document.querySelector('.instructions');
+        if (instructions) {
+            instructions.remove();
+        }
+    }
+}
+
+export default UIManager; 
