@@ -251,4 +251,5 @@ class Player {
     }
 }
 
-export default Player; 
+// Esponi la classe globalmente
+window.Player = Player; 

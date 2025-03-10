@@ -378,4 +378,5 @@ class Map {
     }
 }
 
-export default Map; 
+// Esponi la classe globalmente
+window.Map = Map; 

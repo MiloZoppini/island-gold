@@ -6,13 +6,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Island Gold - Caccia al Tesoro Multiplayer</title>
   <link rel="stylesheet" href="css/style.css">
-  <script src="/socket.io/socket.io.js"></script>
+  
+  <!-- Three.js e librerie correlate -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/js/controls/PointerLockControls.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/js/objects/Water.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/js/objects/Sky.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/js/loaders/GLTFLoader.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/simplex-noise@4.0.1/dist/esm/simplex-noise.js"></script>
+  
+  <!-- Socket.io -->
+  <script src="/socket.io/socket.io.js"></script>
+  
+  <!-- SimplexNoise -->
+  <script src="https://cdn.jsdelivr.net/npm/simplex-noise@2.4.0/simplex-noise.js"></script>
+  
   <!-- Font Awesome per le icone -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -58,33 +65,19 @@
     <div id="debug-panel" class="hidden"></div>
   </div>
 
-  <!-- Scripts -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
-  
   <!-- Core -->
-  <script src="js/core/EventBus.js" type="module"></script>
-  <script src="js/core/InputManager.js" type="module"></script>
-  <script src="js/core/Game.js" type="module"></script>
-
-  <!-- Scene -->
-  <script src="js/scene/SceneManager.js" type="module"></script>
-  <script src="js/scene/Map.js" type="module"></script>
-
-  <!-- Audio -->
-  <script src="js/audio/AudioManager.js" type="module"></script>
-
-  <!-- UI -->
-  <script src="js/ui/UIManager.js" type="module"></script>
-
-  <!-- Entities -->
-  <script src="js/entities/Player.js" type="module"></script>
-  <script src="js/entities/Treasure.js" type="module"></script>
-
-  <!-- Utils -->
-  <script src="js/utils/PerformanceMonitor.js" type="module"></script>
-  <script src="js/utils/QualitySettings.js" type="module"></script>
-
+  <script src="js/core/EventBus.js"></script>
+  <script src="js/core/InputManager.js"></script>
+  <script src="js/utils/PerformanceMonitor.js"></script>
+  <script src="js/utils/QualitySettings.js"></script>
+  <script src="js/audio/AudioManager.js"></script>
+  <script src="js/ui/UIManager.js"></script>
+  <script src="js/scene/SceneManager.js"></script>
+  <script src="js/scene/Map.js"></script>
+  <script src="js/entities/Player.js"></script>
+  <script src="js/entities/Treasure.js"></script>
+  <script src="js/core/Game.js"></script>
+  
   <!-- Water effect -->
   <script src="js/water.js"></script>
 
@@ -93,5 +86,8 @@
 
   <!-- Particles -->
   <script src="js/particles.js"></script>
+  
+  <!-- Main -->
+  <script src="js/main.js"></script>
 </body>
 </html> 

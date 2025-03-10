@@ -110,4 +110,5 @@ class InputManager {
     }
 }
 
-export default InputManager; 
+// Esponi la classe globalmente
+window.InputManager = InputManager; 

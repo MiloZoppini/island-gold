@@ -35,4 +35,5 @@ class EventBus {
     }
 }
 
-export default EventBus; 
+// Esponi la classe globalmente
+window.EventBus = EventBus; 

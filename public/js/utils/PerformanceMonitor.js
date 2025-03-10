@@ -73,4 +73,5 @@ class PerformanceMonitor {
     }
 }
 
-export default PerformanceMonitor; 
+// Esponi la classe globalmente
+window.PerformanceMonitor = PerformanceMonitor; 

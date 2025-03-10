@@ -164,4 +164,5 @@ class QualitySettings {
     }
 }
 
-export default QualitySettings; 
+// Esponi la classe globalmente
+window.QualitySettings = QualitySettings; 

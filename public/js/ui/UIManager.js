@@ -141,4 +141,5 @@ class UIManager {
     }
 }
 
-export default UIManager; 
+// Esponi la classe globalmente
+window.UIManager = UIManager; 

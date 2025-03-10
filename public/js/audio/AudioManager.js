@@ -177,4 +177,5 @@ class AudioManager {
     }
 }
 
-export default AudioManager; 
+// Esponi la classe globalmente
+window.AudioManager = AudioManager; 

@@ -202,4 +202,5 @@ class Treasure {
     }
 }
 
-export default Treasure; 
+// Esponi la classe globalmente
+window.Treasure = Treasure; 

@@ -237,4 +237,5 @@ class SceneManager {
     }
 }
 
-export default SceneManager; 
+// Esponi la classe globalmente
+window.SceneManager = SceneManager; 
