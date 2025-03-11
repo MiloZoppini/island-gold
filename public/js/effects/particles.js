@@ -508,4 +508,7 @@ class ParticleSystem {
       system.update(deltaTime);
     });
   }
-} 
+}
+
+// Esponi la classe globalmente
+window.ParticleSystem = ParticleSystem; 

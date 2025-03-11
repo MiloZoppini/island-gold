@@ -303,4 +303,7 @@ class Water extends THREE.Mesh {
             }
         };
     }
-} 
+}
+
+// Esponi la classe globalmente
+window.WaterEffect = Water; 
