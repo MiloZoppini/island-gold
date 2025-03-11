@@ -60,7 +60,7 @@ class ParticleSystem {
     } = options;
     
     // Crea la geometria delle particelle
-    const geometry = new THREE.BufferGeometry();
+    const geometry = new window.THREE.BufferGeometry();
     const vertices = new Float32Array(count * 3);
     const velocities = new Float32Array(count * 3);
     const lifetimes = new Float32Array(count);
@@ -90,11 +90,11 @@ class ParticleSystem {
       sizes[i] = size * (0.5 + Math.random() * 0.5);
     }
     
-    geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-    geometry.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
-    geometry.setAttribute('lifetime', new THREE.BufferAttribute(lifetimes, 1));
-    geometry.setAttribute('maxLifetime', new THREE.BufferAttribute(maxLifetimes, 1));
-    geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+    geometry.setAttribute('position', new window.THREE.BufferAttribute(vertices, 3));
+    geometry.setAttribute('velocity', new window.THREE.BufferAttribute(velocities, 3));
+    geometry.setAttribute('lifetime', new window.THREE.BufferAttribute(lifetimes, 1));
+    geometry.setAttribute('maxLifetime', new window.THREE.BufferAttribute(maxLifetimes, 1));
+    geometry.setAttribute('size', new window.THREE.BufferAttribute(sizes, 1));
     
     // Crea la texture della particella
     const canvas = document.createElement('canvas');
@@ -110,22 +110,22 @@ class ParticleSystem {
     context.fillStyle = gradient;
     context.fillRect(0, 0, 32, 32);
     
-    const texture = new THREE.CanvasTexture(canvas);
+    const texture = new window.THREE.CanvasTexture(canvas);
     
     // Crea il materiale delle particelle
-    const material = new THREE.PointsMaterial({
+    const material = new window.THREE.PointsMaterial({
       size: 1,
       map: texture,
       transparent: true,
       opacity: opacity,
       depthWrite: false,
-      blending: THREE.AdditiveBlending,
+      blending: window.THREE.AdditiveBlending,
       vertexColors: false,
-      color: new THREE.Color(color)
+      color: new window.THREE.Color(color)
     });
     
     // Crea il sistema di particelle
-    const mesh = new THREE.Points(geometry, material);
+    const mesh = new window.THREE.Points(geometry, material);
     
     return {
       mesh,
@@ -212,7 +212,7 @@ class ParticleSystem {
     } = options;
     
     // Crea la geometria delle particelle
-    const geometry = new THREE.BufferGeometry();
+    const geometry = new window.THREE.BufferGeometry();
     const vertices = new Float32Array(count * 3);
     const velocities = new Float32Array(count * 3);
     const lifetimes = new Float32Array(count);
@@ -221,8 +221,8 @@ class ParticleSystem {
     const colors = new Float32Array(count * 3);
     
     // Colori del fuoco
-    const colorStart = new THREE.Color(color1);
-    const colorEnd = new THREE.Color(color2);
+    const colorStart = new window.THREE.Color(color1);
+    const colorEnd = new window.THREE.Color(color2);
     
     // Inizializza le particelle
     for (let i = 0; i < count; i++) {
@@ -247,18 +247,18 @@ class ParticleSystem {
       sizes[i] = size * (0.5 + Math.random() * 0.5);
       
       // Colore
-      const color = new THREE.Color().copy(colorStart);
+      const color = new window.THREE.Color().copy(colorStart);
       colors[i * 3] = color.r;
       colors[i * 3 + 1] = color.g;
       colors[i * 3 + 2] = color.b;
     }
     
-    geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-    geometry.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
-    geometry.setAttribute('lifetime', new THREE.BufferAttribute(lifetimes, 1));
-    geometry.setAttribute('maxLifetime', new THREE.BufferAttribute(maxLifetimes, 1));
-    geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
-    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    geometry.setAttribute('position', new window.THREE.BufferAttribute(vertices, 3));
+    geometry.setAttribute('velocity', new window.THREE.BufferAttribute(velocities, 3));
+    geometry.setAttribute('lifetime', new window.THREE.BufferAttribute(lifetimes, 1));
+    geometry.setAttribute('maxLifetime', new window.THREE.BufferAttribute(maxLifetimes, 1));
+    geometry.setAttribute('size', new window.THREE.BufferAttribute(sizes, 1));
+    geometry.setAttribute('color', new window.THREE.BufferAttribute(colors, 3));
     
     // Crea la texture della particella
     const canvas = document.createElement('canvas');
@@ -274,21 +274,21 @@ class ParticleSystem {
     context.fillStyle = gradient;
     context.fillRect(0, 0, 32, 32);
     
-    const texture = new THREE.CanvasTexture(canvas);
+    const texture = new window.THREE.CanvasTexture(canvas);
     
     // Crea il materiale delle particelle
-    const material = new THREE.PointsMaterial({
+    const material = new window.THREE.PointsMaterial({
       size: 1,
       map: texture,
       transparent: true,
       opacity: opacity,
       depthWrite: false,
-      blending: THREE.AdditiveBlending,
+      blending: window.THREE.AdditiveBlending,
       vertexColors: true
     });
     
     // Crea il sistema di particelle
-    const mesh = new THREE.Points(geometry, material);
+    const mesh = new window.THREE.Points(geometry, material);
     
     return {
       mesh,
@@ -352,7 +352,7 @@ class ParticleSystem {
         const lifeRatio = lifetimes[i] / maxLifetimes[i];
         
         // Aggiorna il colore
-        const color = new THREE.Color().copy(colorStart).lerp(colorEnd, lifeRatio);
+        const color = new window.THREE.Color().copy(colorStart).lerp(colorEnd, lifeRatio);
         colors[i * 3] = color.r;
         colors[i * 3 + 1] = color.g;
         colors[i * 3 + 2] = color.b;
@@ -394,7 +394,7 @@ class ParticleSystem {
     } = options;
     
     // Crea la geometria delle particelle
-    const geometry = new THREE.BufferGeometry();
+    const geometry = new window.THREE.BufferGeometry();
     const vertices = new Float32Array(count * 3);
     const velocities = new Float32Array(count * 3);
     const lifetimes = new Float32Array(count);
@@ -421,11 +421,11 @@ class ParticleSystem {
       sizes[i] = size * (0.5 + Math.random() * 0.5);
     }
     
-    geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-    geometry.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
-    geometry.setAttribute('lifetime', new THREE.BufferAttribute(lifetimes, 1));
-    geometry.setAttribute('maxLifetime', new THREE.BufferAttribute(maxLifetimes, 1));
-    geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+    geometry.setAttribute('position', new window.THREE.BufferAttribute(vertices, 3));
+    geometry.setAttribute('velocity', new window.THREE.BufferAttribute(velocities, 3));
+    geometry.setAttribute('lifetime', new window.THREE.BufferAttribute(lifetimes, 1));
+    geometry.setAttribute('maxLifetime', new window.THREE.BufferAttribute(maxLifetimes, 1));
+    geometry.setAttribute('size', new window.THREE.BufferAttribute(sizes, 1));
     
     // Crea la texture della particella
     const canvas = document.createElement('canvas');
@@ -441,22 +441,22 @@ class ParticleSystem {
     context.fillStyle = gradient;
     context.fillRect(0, 0, 32, 32);
     
-    const texture = new THREE.CanvasTexture(canvas);
+    const texture = new window.THREE.CanvasTexture(canvas);
     
     // Crea il materiale delle particelle
-    const material = new THREE.PointsMaterial({
+    const material = new window.THREE.PointsMaterial({
       size: size,
       map: texture,
       transparent: true,
       opacity: opacity,
       depthWrite: false,
-      blending: THREE.AdditiveBlending,
+      blending: window.THREE.AdditiveBlending,
       vertexColors: false,
-      color: new THREE.Color(color)
+      color: new window.THREE.Color(color)
     });
     
     // Crea il sistema di particelle
-    const mesh = new THREE.Points(geometry, material);
+    const mesh = new window.THREE.Points(geometry, material);
     
     return {
       mesh,

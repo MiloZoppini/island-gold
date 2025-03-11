@@ -10,7 +10,7 @@ class Weather {
 
     init() {
         // Inizializza la nebbia della scena
-        this.scene.fog = new THREE.FogExp2(0x8395a7, 0.001);
+        this.scene.fog = new window.THREE.FogExp2(0x8395a7, 0.001);
         
         // Crea i sistemi di particelle per pioggia e nebbia
         this.rainParticles = this.particleSystem.createParticleSystem('rain', {

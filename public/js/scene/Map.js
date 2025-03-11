@@ -65,7 +65,7 @@ class Map {
                 );
 
             // Crea la geometria del terreno
-            const geometry = new THREE.PlaneGeometry(
+            const geometry = new window.THREE.PlaneGeometry(
                 this.size,
                 this.size,
                 this.size / this.resolution,
@@ -84,7 +84,7 @@ class Map {
             geometry.computeVertexNormals();
 
             // Crea il materiale del terreno
-            const material = new THREE.MeshStandardMaterial({
+            const material = new window.THREE.MeshStandardMaterial({
                 vertexColors: true,
                 roughness: 0.8,
                 metalness: 0.2
@@ -101,10 +101,10 @@ class Map {
                 colors[i + 2] = color.b;
             }
 
-            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            geometry.setAttribute('color', new window.THREE.BufferAttribute(colors, 3));
 
             // Crea la mesh del terreno
-            this.terrain = new THREE.Mesh(geometry, material);
+            this.terrain = new window.THREE.Mesh(geometry, material);
             this.terrain.rotation.x = -Math.PI / 2;
             this.terrain.receiveShadow = true;
             this.terrain.castShadow = true;
@@ -142,11 +142,11 @@ class Map {
 
     getTerrainColor(height, slope) {
         // Colori base per i diversi tipi di terreno
-        const waterColor = new THREE.Color(0x1E4D6B);
-        const sandColor = new THREE.Color(0xC2B280);
-        const grassColor = new THREE.Color(0x567D46);
-        const rockColor = new THREE.Color(0x8B7355);
-        const snowColor = new THREE.Color(0xFFFFFF);
+        const waterColor = new window.THREE.Color(0x1E4D6B);
+        const sandColor = new window.THREE.Color(0xC2B280);
+        const grassColor = new window.THREE.Color(0x567D46);
+        const rockColor = new window.THREE.Color(0x8B7355);
+        const snowColor = new window.THREE.Color(0xFFFFFF);
 
         // Soglie di altezza
         const waterLevel = 0;
@@ -156,7 +156,7 @@ class Map {
         const snowLevel = 80;
 
         // Determina il colore base in base all'altezza
-        let color = new THREE.Color();
+        let color = new window.THREE.Color();
         if (height < waterLevel) {
             return waterColor;
         } else if (height < sandLevel) {
@@ -170,7 +170,7 @@ class Map {
         }
 
         // Modifica il colore in base alla pendenza
-        const slopeColor = new THREE.Color(0x808080);
+        const slopeColor = new window.THREE.Color(0x808080);
         const maxSlope = 1.0;
         const slopeFactor = Math.min(slope / maxSlope, 1.0);
         color.lerp(slopeColor, slopeFactor * 0.5);
@@ -222,7 +222,7 @@ class Map {
                     // Verifica la distanza dagli altri punti di spawn
                     let isTooClose = false;
                     for (const existingPoint of this.spawnPoints) {
-                        const distance = new THREE.Vector2(x - existingPoint.x, z - existingPoint.z).length();
+                        const distance = new window.THREE.Vector2(x - existingPoint.x, z - existingPoint.z).length();
                         if (distance < minDistance) {
                             isTooClose = true;
                             break;
@@ -230,7 +230,7 @@ class Map {
                     }
 
                     if (!isTooClose) {
-                        point = new THREE.Vector3(x, height, z);
+                        point = new window.THREE.Vector3(x, height, z);
                         this.spawnPoints.push(point);
                     }
                 }
@@ -265,7 +265,7 @@ class Map {
                     // Verifica la distanza dagli altri punti
                     let isTooClose = false;
                     for (const existingSpot of this.treasureSpots) {
-                        const distance = new THREE.Vector2(x - existingSpot.x, z - existingSpot.z).length();
+                        const distance = new window.THREE.Vector2(x - existingSpot.x, z - existingSpot.z).length();
                         if (distance < minDistance) {
                             isTooClose = true;
                             break;
@@ -273,7 +273,7 @@ class Map {
                     }
 
                     if (!isTooClose) {
-                        spot = new THREE.Vector3(x, height, z);
+                        spot = new window.THREE.Vector3(x, height, z);
                         this.treasureSpots.push(spot);
                     }
                 }
@@ -305,7 +305,7 @@ class Map {
         console.log('Aggiunta della vegetazione...');
         try {
             // Carica i modelli degli alberi
-            const loader = new THREE.GLTFLoader();
+            const loader = new window.THREE.GLTFLoader();
             const treeModels = await Promise.all([
                 loader.loadAsync('models/tree1.glb'),
                 loader.loadAsync('models/tree2.glb'),
@@ -344,7 +344,7 @@ class Map {
         console.log('Aggiunta delle rocce...');
         try {
             // Carica i modelli delle rocce
-            const loader = new THREE.GLTFLoader();
+            const loader = new window.THREE.GLTFLoader();
             const rockModels = await Promise.all([
                 loader.loadAsync('models/rock1.glb'),
                 loader.loadAsync('models/rock2.glb'),

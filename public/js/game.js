@@ -23,7 +23,7 @@ function init() {
   initThree();
   
   // Inizializza il clock per il deltaTime
-  clock = new THREE.Clock();
+  clock = new window.THREE.Clock();
   
   // Avvia il loop di rendering
   animate();
@@ -146,10 +146,10 @@ function initSocket() {
 // Inizializza Three.js
 function initThree() {
   // Crea la scena
-  scene = new THREE.Scene();
+  scene = new window.THREE.Scene();
   
   // Crea la camera
-  camera = new THREE.PerspectiveCamera(
+  camera = new window.THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
     0.1,
@@ -157,7 +157,7 @@ function initThree() {
   );
   
   // Crea il renderer
-  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer = new window.THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.shadowMap.enabled = true;

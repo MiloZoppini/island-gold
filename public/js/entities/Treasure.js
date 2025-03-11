@@ -18,8 +18,8 @@ class Treasure {
 
     setupTreasure(position) {
         // Crea la geometria del tesoro (per ora un cubo dorato)
-        const geometry = new THREE.BoxGeometry(1, 1, 1);
-        const material = new THREE.MeshStandardMaterial({
+        const geometry = new window.THREE.BoxGeometry(1, 1, 1);
+        const material = new window.THREE.MeshStandardMaterial({
             color: 0xFFD700,
             metalness: 1,
             roughness: 0.3,
@@ -27,7 +27,7 @@ class Treasure {
             emissiveIntensity: 0.2
         });
 
-        this.mesh = new THREE.Mesh(geometry, material);
+        this.mesh = new window.THREE.Mesh(geometry, material);
         this.mesh.position.copy(position);
         this.mesh.castShadow = true;
         this.mesh.receiveShadow = true;
@@ -36,7 +36,7 @@ class Treasure {
         this.scene.add(this.mesh);
 
         // Crea la collider box
-        this.collider = new THREE.Box3().setFromObject(this.mesh);
+        this.collider = new window.THREE.Box3().setFromObject(this.mesh);
 
         // Aggiungi una reference al tesoro nel mesh per il raycasting
         this.mesh.treasure = this;
@@ -44,10 +44,10 @@ class Treasure {
 
     setupGlow() {
         // Crea un materiale per l'effetto glow
-        this.glowMaterial = new THREE.ShaderMaterial({
+        this.glowMaterial = new window.THREE.ShaderMaterial({
             uniforms: {
                 time: { value: 0 },
-                color: { value: new THREE.Color(0xFFD700) }
+                color: { value: new window.THREE.Color(0xFFD700) }
             },
             vertexShader: `
                 varying vec3 vNormal;
@@ -67,13 +67,13 @@ class Treasure {
                 }
             `,
             transparent: true,
-            blending: THREE.AdditiveBlending,
-            side: THREE.BackSide
+            blending: window.THREE.AdditiveBlending,
+            side: window.THREE.BackSide
         });
 
         // Crea una mesh leggermente più grande per l'effetto glow
-        const glowGeometry = new THREE.BoxGeometry(1.2, 1.2, 1.2);
-        const glowMesh = new THREE.Mesh(glowGeometry, this.glowMaterial);
+        const glowGeometry = new window.THREE.BoxGeometry(1.2, 1.2, 1.2);
+        const glowMesh = new window.THREE.Mesh(glowGeometry, this.glowMaterial);
         this.mesh.add(glowMesh);
     }
 

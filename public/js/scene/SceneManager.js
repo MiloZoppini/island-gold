@@ -28,12 +28,12 @@ class SceneManager {
     }
 
     setupScene() {
-        this.scene = new THREE.Scene();
-        this.scene.fog = new THREE.FogExp2(0x88ccee, 0.002);
+        this.scene = new window.THREE.Scene();
+        this.scene.fog = new window.THREE.FogExp2(0x88ccee, 0.002);
     }
 
     setupCamera() {
-        this.camera = new THREE.PerspectiveCamera(
+        this.camera = new window.THREE.PerspectiveCamera(
             75,
             window.innerWidth / window.innerHeight,
             0.1,
@@ -44,28 +44,28 @@ class SceneManager {
     }
 
     setupRenderer() {
-        this.renderer = new THREE.WebGLRenderer({
+        this.renderer = new window.THREE.WebGLRenderer({
             antialias: this.qualitySettings.getSetting('antialiasing'),
             powerPreference: "high-performance"
         });
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.shadowMap.enabled = true;
-        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        this.renderer.shadowMap.type = window.THREE.PCFSoftShadowMap;
+        this.renderer.toneMapping = window.THREE.ACESFilmicToneMapping;
         this.renderer.toneMappingExposure = 1.2;
-        this.renderer.outputEncoding = THREE.sRGBEncoding;
+        this.renderer.outputEncoding = window.THREE.sRGBEncoding;
 
         document.getElementById('game-container').appendChild(this.renderer.domElement);
     }
 
     setupLights() {
         // Luce ambientale
-        this.lights.ambient = new THREE.AmbientLight(0x404040);
+        this.lights.ambient = new window.THREE.AmbientLight(0x404040);
         this.scene.add(this.lights.ambient);
 
         // Luce direzionale (sole)
-        this.lights.directional = new THREE.DirectionalLight(0xffffff, 1);
+        this.lights.directional = new window.THREE.DirectionalLight(0xffffff, 1);
         this.lights.directional.position.set(100, 100, 0);
         this.lights.directional.castShadow = true;
         this.lights.directional.shadow.mapSize.width = this.qualitySettings.getSetting('shadowMapSize');
@@ -75,18 +75,18 @@ class SceneManager {
         this.scene.add(this.lights.directional);
 
         // Luce emisferica
-        this.lights.hemisphere = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
+        this.lights.hemisphere = new window.THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
         this.scene.add(this.lights.hemisphere);
     }
 
     setupEnvironment() {
         // Cielo
-        this.sky = new THREE.Sky();
+        this.sky = new window.THREE.Sky();
         this.sky.scale.setScalar(10000);
         this.scene.add(this.sky);
 
         // Sole
-        this.sun = new THREE.Vector3();
+        this.sun = new window.THREE.Vector3();
         const uniforms = this.sky.material.uniforms;
         uniforms['turbidity'].value = 10;
         uniforms['rayleigh'].value = 2;
@@ -94,14 +94,14 @@ class SceneManager {
         uniforms['mieDirectionalG'].value = 0.8;
 
         // Acqua
-        const waterGeometry = new THREE.PlaneGeometry(10000, 10000);
-        this.water = new THREE.Water(waterGeometry, {
+        const waterGeometry = new window.THREE.PlaneGeometry(10000, 10000);
+        this.water = new window.THREE.Water(waterGeometry, {
             textureWidth: this.qualitySettings.getSetting('waterQuality') === 'high' ? 1024 : 512,
             textureHeight: this.qualitySettings.getSetting('waterQuality') === 'high' ? 1024 : 512,
-            waterNormals: new THREE.TextureLoader().load('textures/waternormals.jpg', (texture) => {
-                texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+            waterNormals: new window.THREE.TextureLoader().load('textures/waternormals.jpg', (texture) => {
+                texture.wrapS = texture.wrapT = window.THREE.RepeatWrapping;
             }),
-            sunDirection: new THREE.Vector3(),
+            sunDirection: new window.THREE.Vector3(),
             sunColor: 0xffffff,
             waterColor: 0x001e0f,
             distortionScale: 3.7,

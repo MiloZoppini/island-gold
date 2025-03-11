@@ -5,7 +5,7 @@
 
 class GameWorld {
   constructor() {
-    this.scene = new THREE.Scene();
+    this.scene = new window.THREE.Scene();
     this.camera = null;
     this.renderer = null;
     this.water = null;
@@ -35,14 +35,14 @@ class GameWorld {
    */
   init() {
     // Inizializza il renderer
-    this.renderer = new THREE.WebGLRenderer({ antialias: true });
+    this.renderer = new window.THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.renderer.shadowMap.type = window.THREE.PCFSoftShadowMap;
     document.body.appendChild(this.renderer.domElement);
 
     // Inizializza la camera
-    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    this.camera = new window.THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     this.camera.position.set(0, 30, 100);
     this.camera.lookAt(0, 0, 0);
 
@@ -68,9 +68,9 @@ class GameWorld {
    */
   loadTextures() {
     // Carica la texture per le normali dell'acqua
-    const textureLoader = new THREE.TextureLoader();
+    const textureLoader = new window.THREE.TextureLoader();
     this.waterNormals = textureLoader.load('assets/textures/waternormals.jpg');
-    this.waterNormals.wrapS = this.waterNormals.wrapT = THREE.RepeatWrapping;
+    this.waterNormals.wrapS = this.waterNormals.wrapT = window.THREE.RepeatWrapping;
   }
 
   /**
@@ -78,13 +78,13 @@ class GameWorld {
    */
   createSkybox() {
     // Crea una semplice sfera per il cielo
-    const skyGeometry = new THREE.SphereGeometry(gameConfig.world.size.width / 2, 32, 32);
-    const skyMaterial = new THREE.MeshBasicMaterial({
+    const skyGeometry = new window.THREE.SphereGeometry(gameConfig.world.size.width / 2, 32, 32);
+    const skyMaterial = new window.THREE.MeshBasicMaterial({
       color: gameConfig.world.skyColor,
-      side: THREE.BackSide
+      side: window.THREE.BackSide
     });
     
-    this.skybox = new THREE.Mesh(skyGeometry, skyMaterial);
+    this.skybox = new window.THREE.Mesh(skyGeometry, skyMaterial);
     this.scene.add(this.skybox);
   }
 
@@ -93,11 +93,11 @@ class GameWorld {
    */
   createLights() {
     // Luce ambientale
-    this.lights.ambient = new THREE.AmbientLight(0xffffff, 0.5);
+    this.lights.ambient = new window.THREE.AmbientLight(0xffffff, 0.5);
     this.scene.add(this.lights.ambient);
     
     // Luce direzionale (sole)
-    this.lights.directional = new THREE.DirectionalLight(0xffffff, 0.8);
+    this.lights.directional = new window.THREE.DirectionalLight(0xffffff, 0.8);
     this.lights.directional.position.set(100, 200, 100);
     this.lights.directional.castShadow = true;
     
@@ -115,7 +115,7 @@ class GameWorld {
     this.scene.add(this.lights.directional);
     
     // Luce emisferica per illuminare meglio il terreno
-    this.lights.hemispheric = new THREE.HemisphereLight(0x87CEEB, 0x3a9d23, 0.6);
+    this.lights.hemispheric = new window.THREE.HemisphereLight(0x87CEEB, 0x3a9d23, 0.6);
     this.scene.add(this.lights.hemispheric);
   }
 
@@ -126,7 +126,7 @@ class GameWorld {
     const { width, depth } = gameConfig.world.size;
     
     // Crea una geometria per il terreno
-    const geometry = new THREE.PlaneGeometry(width, depth, 128, 128);
+    const geometry = new window.THREE.PlaneGeometry(width, depth, 128, 128);
     
     // Ruota il piano per renderlo orizzontale
     geometry.rotateX(-Math.PI / 2);
@@ -181,7 +181,7 @@ class GameWorld {
       terrainTypeData[i / 3] = terrainType;
       
       // Imposta il colore in base al tipo di terreno
-      const color = new THREE.Color(this.terrainTypes[terrainType].color);
+      const color = new window.THREE.Color(this.terrainTypes[terrainType].color);
       const colorIndex = i / 3 * 3;
       colors[colorIndex] = color.r;
       colors[colorIndex + 1] = color.g;
@@ -198,17 +198,17 @@ class GameWorld {
     geometry.computeVertexNormals();
     
     // Aggiungi i colori alla geometria
-    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    geometry.setAttribute('color', new window.THREE.BufferAttribute(colors, 3));
     
     // Crea un materiale per il terreno
-    const material = new THREE.MeshStandardMaterial({
+    const material = new window.THREE.MeshStandardMaterial({
       vertexColors: true,
       roughness: 0.8,
       metalness: 0.1
     });
     
     // Crea la mesh del terreno
-    this.terrainMesh = new THREE.Mesh(geometry, material);
+    this.terrainMesh = new window.THREE.Mesh(geometry, material);
     this.terrainMesh.receiveShadow = true;
     this.terrainMesh.name = 'terrain';
     this.terrainMesh.userData.terrainTypeData = terrainTypeData;
@@ -256,9 +256,9 @@ class GameWorld {
     
     // Tipi di rocce
     const rockTypes = [
-      { geometry: new THREE.DodecahedronGeometry(1, 0), scale: [1.5, 2.5, 1.5] },
-      { geometry: new THREE.IcosahedronGeometry(1, 0), scale: [2, 1.5, 2] },
-      { geometry: new THREE.TetrahedronGeometry(1, 0), scale: [2.5, 3, 2.5] }
+      { geometry: new window.THREE.DodecahedronGeometry(1, 0), scale: [1.5, 2.5, 1.5] },
+      { geometry: new window.THREE.IcosahedronGeometry(1, 0), scale: [2, 1.5, 2] },
+      { geometry: new window.THREE.TetrahedronGeometry(1, 0), scale: [2.5, 3, 2.5] }
     ];
     
     for (let i = 0; i < count; i++) {
@@ -295,7 +295,7 @@ class GameWorld {
       rockGeometry.computeVertexNormals();
       
       // Materiale della roccia
-      const rockMaterial = new THREE.MeshStandardMaterial({
+      const rockMaterial = new window.THREE.MeshStandardMaterial({
         color: 0x888888,
         roughness: 0.9,
         metalness: 0.1,
@@ -304,13 +304,13 @@ class GameWorld {
       
       // Aggiungi variazione al colore
       const colorVariation = 0.2;
-      const baseColor = new THREE.Color(0x888888);
+      const baseColor = new window.THREE.Color(0x888888);
       baseColor.r += (Math.random() - 0.5) * colorVariation;
       baseColor.g += (Math.random() - 0.5) * colorVariation;
       baseColor.b += (Math.random() - 0.5) * colorVariation;
       rockMaterial.color = baseColor;
       
-      const rock = new THREE.Mesh(rockGeometry, rockMaterial);
+      const rock = new window.THREE.Mesh(rockGeometry, rockMaterial);
       rock.position.set(x, y, z);
       rock.rotation.set(
         Math.random() * Math.PI,
@@ -336,19 +336,19 @@ class GameWorld {
     const treeTypes = [
       {
         // Pino
-        trunk: { geometry: new THREE.CylinderGeometry(0.5, 0.7, 5, 8), color: 0x8B4513, y: 2.5 },
-        leaves: { geometry: new THREE.ConeGeometry(3, 6, 8), color: 0x2E8B57, y: 5.5 }
+        trunk: { geometry: new window.THREE.CylinderGeometry(0.5, 0.7, 5, 8), color: 0x8B4513, y: 2.5 },
+        leaves: { geometry: new window.THREE.ConeGeometry(3, 6, 8), color: 0x2E8B57, y: 5.5 }
       },
       {
         // Quercia
-        trunk: { geometry: new THREE.CylinderGeometry(0.7, 1, 4, 8), color: 0x8B4513, y: 2 },
-        leaves: { geometry: new THREE.SphereGeometry(3, 8, 8), color: 0x3a9d23, y: 5 }
+        trunk: { geometry: new window.THREE.CylinderGeometry(0.7, 1, 4, 8), color: 0x8B4513, y: 2 },
+        leaves: { geometry: new window.THREE.SphereGeometry(3, 8, 8), color: 0x3a9d23, y: 5 }
       },
       {
         // Palma
-        trunk: { geometry: new THREE.CylinderGeometry(0.4, 0.6, 7, 8), color: 0xA0522D, y: 3.5 },
+        trunk: { geometry: new window.THREE.CylinderGeometry(0.4, 0.6, 7, 8), color: 0xA0522D, y: 3.5 },
         leaves: { 
-          geometry: new THREE.BufferGeometry(),
+          geometry: new window.THREE.BufferGeometry(),
           color: 0x3a9d23,
           y: 7,
           custom: true
@@ -383,7 +383,7 @@ class GameWorld {
       const treeType = treeTypes[treeTypeIndex];
       
       // Crea un gruppo per l'albero
-      const tree = new THREE.Group();
+      const tree = new window.THREE.Group();
       tree.position.set(x, y, z);
       
       // Aggiungi una leggera rotazione casuale
@@ -391,13 +391,13 @@ class GameWorld {
       
       // Crea il tronco
       const trunkGeometry = treeType.trunk.geometry.clone();
-      const trunkMaterial = new THREE.MeshStandardMaterial({
+      const trunkMaterial = new window.THREE.MeshStandardMaterial({
         color: treeType.trunk.color,
         roughness: 0.9,
         metalness: 0.1
       });
       
-      const trunk = new THREE.Mesh(trunkGeometry, trunkMaterial);
+      const trunk = new window.THREE.Mesh(trunkGeometry, trunkMaterial);
       trunk.position.y = treeType.trunk.y;
       trunk.castShadow = true;
       trunk.receiveShadow = true;
@@ -408,19 +408,19 @@ class GameWorld {
       if (treeType.leaves.custom) {
         // Crea foglie personalizzate per la palma
         const leafCount = 8;
-        const leafGroup = new THREE.Group();
+        const leafGroup = new window.THREE.Group();
         leafGroup.position.y = treeType.leaves.y;
         
         for (let j = 0; j < leafCount; j++) {
           const angle = (j / leafCount) * Math.PI * 2;
           const leafLength = 3 + Math.random();
           
-          const leafGeometry = new THREE.PlaneGeometry(leafLength, 0.5, 4, 1);
-          const leafMaterial = new THREE.MeshStandardMaterial({
+          const leafGeometry = new window.THREE.PlaneGeometry(leafLength, 0.5, 4, 1);
+          const leafMaterial = new window.THREE.MeshStandardMaterial({
             color: treeType.leaves.color,
             roughness: 0.8,
             metalness: 0.1,
-            side: THREE.DoubleSide
+            side: window.THREE.DoubleSide
           });
           
           // Deforma la geometria per creare una foglia curva
@@ -433,7 +433,7 @@ class GameWorld {
           
           leafGeometry.computeVertexNormals();
           
-          const leaf = new THREE.Mesh(leafGeometry, leafMaterial);
+          const leaf = new window.THREE.Mesh(leafGeometry, leafMaterial);
           leaf.rotation.set(
             Math.random() * 0.2 - 0.1,
             angle,
@@ -448,13 +448,13 @@ class GameWorld {
       } else {
         // Crea foglie standard
         const leavesGeometry = treeType.leaves.geometry.clone();
-        const leavesMaterial = new THREE.MeshStandardMaterial({
+        const leavesMaterial = new window.THREE.MeshStandardMaterial({
           color: treeType.leaves.color,
           roughness: 0.8,
           metalness: 0.1
         });
         
-        const leaves = new THREE.Mesh(leavesGeometry, leavesMaterial);
+        const leaves = new window.THREE.Mesh(leavesGeometry, leavesMaterial);
         leaves.position.y = treeType.leaves.y;
         leaves.castShadow = true;
         
@@ -473,7 +473,7 @@ class GameWorld {
    */
   createWater(width, depth) {
     // Crea un piano più grande del terreno per l'acqua
-    const waterGeometry = new THREE.PlaneGeometry(width * 1.5, depth * 1.5, 32, 32);
+    const waterGeometry = new window.THREE.PlaneGeometry(width * 1.5, depth * 1.5, 32, 32);
     
     // Crea l'acqua con effetti avanzati
     this.water = new Water(

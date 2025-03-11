@@ -9,7 +9,7 @@ class Lighting {
 
     init() {
         // Luce solare direzionale
-        this.sunLight = new THREE.DirectionalLight(0xffffff, 1);
+        this.sunLight = new window.THREE.DirectionalLight(0xffffff, 1);
         this.sunLight.position.set(100, 100, 0);
         this.sunLight.castShadow = true;
         this.sunLight.shadow.mapSize.width = 2048;
@@ -23,7 +23,7 @@ class Lighting {
         this.scene.add(this.sunLight);
 
         // Luce lunare direzionale (più debole e bluastra)
-        this.moonLight = new THREE.DirectionalLight(0x4d5e7c, 0.3);
+        this.moonLight = new window.THREE.DirectionalLight(0x4d5e7c, 0.3);
         this.moonLight.position.set(-100, 100, 0);
         this.moonLight.castShadow = true;
         this.moonLight.shadow.mapSize.width = 2048;
@@ -37,11 +37,11 @@ class Lighting {
         this.scene.add(this.moonLight);
 
         // Luce ambientale
-        this.ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+        this.ambientLight = new window.THREE.AmbientLight(0x404040, 0.5);
         this.scene.add(this.ambientLight);
 
         // Luce emisferica per simulare il cielo
-        this.hemisphereLight = new THREE.HemisphereLight(0x87CEEB, 0x4d5e7c, 0.5);
+        this.hemisphereLight = new window.THREE.HemisphereLight(0x87CEEB, 0x4d5e7c, 0.5);
         this.scene.add(this.hemisphereLight);
     }
 
@@ -73,8 +73,8 @@ class Lighting {
         this.moonLight.intensity = moonIntensity * 0.3;
 
         // Aggiorna colore della luce ambientale
-        const dayColor = new THREE.Color(0x404040);
-        const nightColor = new THREE.Color(0x1a1a2a);
+        const dayColor = new window.THREE.Color(0x404040);
+        const nightColor = new window.THREE.Color(0x1a1a2a);
         this.ambientLight.color.copy(dayColor).lerp(nightColor, moonIntensity);
 
         // Aggiorna intensità della luce emisferica

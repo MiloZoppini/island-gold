@@ -1,12 +1,12 @@
 class Player {
-    constructor(scene, eventBus, position = new THREE.Vector3()) {
+    constructor(scene, eventBus, position = new window.THREE.Vector3()) {
         this.scene = scene;
         this.eventBus = eventBus;
         this.mesh = null;
         this.camera = null;
-        this.velocity = new THREE.Vector3();
-        this.direction = new THREE.Vector3();
-        this.rotation = new THREE.Euler(0, 0, 0, 'YXZ');
+        this.velocity = new window.THREE.Vector3();
+        this.direction = new window.THREE.Vector3();
+        this.rotation = new window.THREE.Euler(0, 0, 0, 'YXZ');
         this.speed = 10;
         this.jumpForce = 15;
         this.gravity = 30;
@@ -25,9 +25,9 @@ class Player {
 
     setupPlayer(position) {
         // Crea il modello del giocatore (per ora un cilindro semplice)
-        const geometry = new THREE.CylinderGeometry(0.5, 0.5, 2, 8);
-        const material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
-        this.mesh = new THREE.Mesh(geometry, material);
+        const geometry = new window.THREE.CylinderGeometry(0.5, 0.5, 2, 8);
+        const material = new window.THREE.MeshPhongMaterial({ color: 0x00ff00 });
+        this.mesh = new window.THREE.Mesh(geometry, material);
         this.mesh.position.copy(position);
         this.mesh.castShadow = true;
         this.mesh.receiveShadow = true;
@@ -36,11 +36,11 @@ class Player {
         this.scene.add(this.mesh);
 
         // Aggiungi una collider box per le collisioni
-        this.collider = new THREE.Box3().setFromObject(this.mesh);
+        this.collider = new window.THREE.Box3().setFromObject(this.mesh);
     }
 
     setupCamera() {
-        this.camera = new THREE.PerspectiveCamera(
+        this.camera = new window.THREE.PerspectiveCamera(
             75,
             window.innerWidth / window.innerHeight,
             0.1,

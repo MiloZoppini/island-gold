@@ -8,7 +8,7 @@ class Game {
         this.performanceMonitor = performanceMonitor;
         this.qualitySettings = qualitySettings;
         
-        this.clock = new THREE.Clock();
+        this.clock = new window.THREE.Clock();
         this.player = null;
         this.treasures = [];
         this.isRunning = false;
@@ -86,7 +86,7 @@ class Game {
 
     createPlayer() {
         // Crea il giocatore
-        const spawnPoint = new THREE.Vector3(0, 5, 0);
+        const spawnPoint = new window.THREE.Vector3(0, 5, 0);
         this.player = new Player(this.sceneManager.scene, this.eventBus, spawnPoint);
         
         // Imposta il giocatore come attore principale
@@ -102,10 +102,10 @@ class Game {
     createTreasures() {
         // Crea alcuni tesori di esempio
         const treasurePositions = [
-            new THREE.Vector3(10, 0, 10),
-            new THREE.Vector3(-10, 0, -10),
-            new THREE.Vector3(20, 0, -20),
-            new THREE.Vector3(-20, 0, 20)
+            new window.THREE.Vector3(10, 0, 10),
+            new window.THREE.Vector3(-10, 0, -10),
+            new window.THREE.Vector3(20, 0, -20),
+            new window.THREE.Vector3(-20, 0, 20)
         ];
         
         treasurePositions.forEach((position, index) => {

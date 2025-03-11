@@ -30,7 +30,7 @@ class WaterEffect {
         }
 
         // Crea la geometria dell'acqua
-        const waterGeometry = new THREE.PlaneGeometry(
+        const waterGeometry = new window.THREE.PlaneGeometry(
             this.options.size, 
             this.options.size, 
             32, 
@@ -41,18 +41,18 @@ class WaterEffect {
         waterGeometry.rotateX(-Math.PI / 2);
 
         // Crea la texture per le normali dell'acqua
-        const waterNormals = new THREE.TextureLoader().load('textures/waternormals.jpg', function(texture) {
-            texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        const waterNormals = new window.THREE.TextureLoader().load('textures/waternormals.jpg', function(texture) {
+            texture.wrapS = texture.wrapT = window.THREE.RepeatWrapping;
         });
 
         // Crea l'acqua utilizzando la classe Water di Three.js
-        this.water = new Water(
+        this.water = new window.Water(
             waterGeometry,
             {
                 textureWidth: this.options.textureWidth,
                 textureHeight: this.options.textureHeight,
                 waterNormals: waterNormals,
-                sunDirection: new THREE.Vector3(0, 1, 0),
+                sunDirection: new window.THREE.Vector3(0, 1, 0),
                 sunColor: 0xffffff,
                 waterColor: this.options.waterColor,
                 distortionScale: this.options.distortionScale,
