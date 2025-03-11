@@ -22,6 +22,7 @@
         <div class="loading-progress"></div>
       </div>
       <p class="loading-text">Caricamento...</p>
+      <div id="loading-errors" class="error-log"></div>
     </div>
   </div>
 
@@ -67,10 +68,21 @@
     window.Sky = Sky;
     window.GLTFLoader = GLTFLoader;
     window.threeJsLoaded = true;
+    console.log('Three.js e i suoi moduli sono stati caricati con successo');
   </script>
 
   <!-- Script di caricamento -->
   <script>
+    const loadingErrors = document.getElementById('loading-errors');
+    
+    function logError(message) {
+      console.error(message);
+      const errorDiv = document.createElement('div');
+      errorDiv.className = 'error-message';
+      errorDiv.textContent = message;
+      loadingErrors.appendChild(errorDiv);
+    }
+
     function loadScripts() {
       const scripts = [
         { src: "https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js", module: false },
@@ -101,10 +113,21 @@
         loadingText.textContent = `Caricamento... ${Math.round(progress)}%`;
       }
 
+      function checkDependencies() {
+        if (!window.THREE) {
+          logError('Three.js non è stato caricato correttamente');
+          return false;
+        }
+        return true;
+      }
+
       function loadNextScript() {
         if (loaded >= scripts.length) {
           console.log("Tutti gli script sono stati caricati");
-          setTimeout(initializeGame, 500); // Piccolo ritardo per assicurarsi che tutto sia pronto
+          if (checkDependencies()) {
+            console.log("Tutte le dipendenze sono state caricate correttamente");
+            setTimeout(initializeGame, 500);
+          }
           return;
         }
 
@@ -114,13 +137,15 @@
         script.type = module ? "module" : "text/javascript";
         
         script.onload = () => {
+          console.log(`Script caricato con successo: ${src}`);
           loaded++;
           updateProgress();
           loadNextScript();
         };
         
         script.onerror = (error) => {
-          console.error(`Errore nel caricamento dello script: ${src}`, error);
+          logError(`Errore nel caricamento dello script: ${src}`);
+          console.error(error);
           loaded++;
           updateProgress();
           loadNextScript();
@@ -129,11 +154,21 @@
         document.body.appendChild(script);
       }
 
-      loadNextScript();
+      if (checkDependencies()) {
+        loadNextScript();
+      }
     }
 
     function initializeGame() {
-      if (window.threeJsLoaded && window.Game) {
+      try {
+        if (!window.threeJsLoaded) {
+          throw new Error("Three.js non è stato caricato correttamente");
+        }
+        if (!window.Game) {
+          throw new Error("La classe Game non è stata caricata correttamente");
+        }
+        
+        console.log("Inizializzazione del gioco...");
         const game = new window.Game(
           new window.EventBus(),
           new window.SceneManager(),
@@ -143,19 +178,42 @@
           new window.PerformanceMonitor(),
           new window.QualitySettings()
         );
+        
         game.init();
         
         // Nascondi la schermata di caricamento
         document.getElementById('loading-screen').classList.add('hidden');
         // Mostra la schermata iniziale
         document.getElementById('start-screen').classList.remove('hidden');
-      } else {
-        console.error('Three.js o Game non sono stati caricati correttamente');
+        
+        console.log("Gioco inizializzato con successo");
+      } catch (error) {
+        logError(`Errore durante l'inizializzazione del gioco: ${error.message}`);
       }
     }
 
     // Avvia il caricamento degli script quando la pagina è pronta
     document.addEventListener('DOMContentLoaded', loadScripts);
   </script>
+
+  <style>
+    .error-log {
+      margin-top: 20px;
+      color: #ff4444;
+      font-family: monospace;
+      text-align: left;
+      max-height: 150px;
+      overflow-y: auto;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 4px;
+    }
+    
+    .error-message {
+      margin: 5px 0;
+      padding: 5px;
+      border-left: 3px solid #ff4444;
+    }
+  </style>
 </body>
 </html> 
