@@ -23,6 +23,12 @@ class WaterEffect {
      * @returns {THREE.Mesh} Mesh dell'acqua
      */
     create(y = 0) {
+        // Verifica che Water sia disponibile
+        if (typeof Water === 'undefined') {
+            console.error('La classe Water non è disponibile. Assicurati che Three.js sia caricato correttamente.');
+            return null;
+        }
+
         // Crea la geometria dell'acqua
         const waterGeometry = new THREE.PlaneGeometry(
             this.options.size, 

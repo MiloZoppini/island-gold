@@ -7,28 +7,6 @@
   <title>Island Gold - Caccia al Tesoro Multiplayer</title>
   <link rel="stylesheet" href="css/style.css">
   
-  <!-- Three.js e librerie correlate -->
-  <script type="module">
-    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js';
-    import { PointerLockControls } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/controls/PointerLockControls.js';
-    import { Water } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/objects/Water.js';
-    import { Sky } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/objects/Sky.js';
-    import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/loaders/GLTFLoader.js';
-    
-    // Esponi globalmente
-    window.THREE = THREE;
-    window.PointerLockControls = PointerLockControls;
-    window.Water = Water;
-    window.Sky = Sky;
-    window.GLTFLoader = GLTFLoader;
-  </script>
-  
-  <!-- Socket.io -->
-  <script src="/socket.io/socket.io.js"></script>
-  
-  <!-- SimplexNoise - Versione compatibile senza ES6 modules -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>
-  
   <!-- Font Awesome per le icone -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -74,29 +52,86 @@
     <div id="debug-panel" class="hidden"></div>
   </div>
 
-  <!-- Core -->
-  <script src="js/core/EventBus.js"></script>
-  <script src="js/core/InputManager.js"></script>
-  <script src="js/utils/PerformanceMonitor.js"></script>
-  <script src="js/utils/QualitySettings.js"></script>
-  <script src="js/audio/AudioManager.js"></script>
-  <script src="js/ui/UIManager.js"></script>
-  <script src="js/scene/SceneManager.js"></script>
-  <script src="js/scene/Map.js"></script>
-  <script src="js/entities/Player.js"></script>
-  <script src="js/entities/Treasure.js"></script>
-  <script src="js/core/Game.js"></script>
-  
-  <!-- Water effect -->
-  <script src="js/effects/water.js"></script>
-
-  <!-- Terrain -->
-  <script src="js/core/terrain.js"></script>
-
-  <!-- Particles -->
-  <script src="js/effects/particles.js"></script>
-  
-  <!-- Main -->
-  <script src="js/main.js"></script>
+  <!-- Three.js e librerie correlate -->
+  <script type="module">
+    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js';
+    import { PointerLockControls } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/controls/PointerLockControls.js';
+    import { Water } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/objects/Water.js';
+    import { Sky } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/objects/Sky.js';
+    import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/loaders/GLTFLoader.js';
+    
+    // Esponi globalmente
+    window.THREE = THREE;
+    window.PointerLockControls = PointerLockControls;
+    window.Water = Water;
+    window.Sky = Sky;
+    window.GLTFLoader = GLTFLoader;
+    
+    // Segnala che Three.js è stato caricato
+    window.threeJsLoaded = true;
+    
+    // Carica gli script dopo che Three.js è stato caricato
+    function loadScripts() {
+      const scripts = [
+        // Socket.io
+        "/socket.io/socket.io.js",
+        
+        // SimplexNoise
+        "https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js",
+        
+        // Core
+        "js/core/EventBus.js",
+        "js/core/InputManager.js",
+        "js/utils/PerformanceMonitor.js",
+        "js/utils/QualitySettings.js",
+        "js/audio/AudioManager.js",
+        "js/ui/UIManager.js",
+        "js/scene/SceneManager.js",
+        "js/scene/Map.js",
+        "js/entities/Player.js",
+        "js/entities/Treasure.js",
+        "js/core/Game.js",
+        
+        // Effects
+        "js/effects/water.js",
+        "js/core/terrain.js",
+        "js/effects/particles.js",
+        
+        // Main - caricato per ultimo
+        "js/main.js"
+      ];
+      
+      let loaded = 0;
+      
+      function loadNextScript() {
+        if (loaded >= scripts.length) {
+          console.log("Tutti gli script sono stati caricati");
+          return;
+        }
+        
+        const script = document.createElement('script');
+        script.src = scripts[loaded];
+        script.onload = () => {
+          loaded++;
+          loadNextScript();
+        };
+        script.onerror = (error) => {
+          console.error(`Errore nel caricamento dello script: ${scripts[loaded]}`, error);
+          loaded++;
+          loadNextScript();
+        };
+        document.body.appendChild(script);
+      }
+      
+      loadNextScript();
+    }
+    
+    // Carica gli script quando il documento è pronto
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadScripts);
+    } else {
+      loadScripts();
+    }
+  </script>
 </body>
 </html> 
