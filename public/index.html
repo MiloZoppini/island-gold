@@ -8,11 +8,20 @@
   <link rel="stylesheet" href="css/style.css">
   
   <!-- Three.js e librerie correlate -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/js/controls/PointerLockControls.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/js/objects/Water.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/js/objects/Sky.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script type="module">
+    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js';
+    import { PointerLockControls } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/controls/PointerLockControls.js';
+    import { Water } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/objects/Water.js';
+    import { Sky } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/objects/Sky.js';
+    import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/loaders/GLTFLoader.js';
+    
+    // Esponi globalmente
+    window.THREE = THREE;
+    window.PointerLockControls = PointerLockControls;
+    window.Water = Water;
+    window.Sky = Sky;
+    window.GLTFLoader = GLTFLoader;
+  </script>
   
   <!-- Socket.io -->
   <script src="/socket.io/socket.io.js"></script>
