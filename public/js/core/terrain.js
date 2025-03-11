@@ -166,4 +166,7 @@ class TerrainGenerator {
     
     return heightmap;
   }
-} 
+}
+
+// Esponi la classe globalmente
+window.TerrainGenerator = TerrainGenerator; 
