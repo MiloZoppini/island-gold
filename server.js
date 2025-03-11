@@ -12,23 +12,25 @@ const io = require('socket.io')(http, {
 
 // Configura gli header di sicurezza e MIME types
 app.use((req, res, next) => {
-  // Rimuovi l'header X-Content-Type-Options per permettere il caricamento degli script
-  res.removeHeader('X-Content-Type-Options');
-  
   // Imposta i MIME types corretti
   if (req.url.endsWith('.js')) {
     res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
   }
   
-  // Configura CORS per Render.com
+  // Configura CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   
-  // Permetti l'esecuzione di script
-  res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
-  res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
-  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+  // Permetti l'esecuzione di script cross-origin
+  res.removeHeader('Cross-Origin-Resource-Policy');
+  res.removeHeader('Cross-Origin-Embedder-Policy');
+  res.removeHeader('Cross-Origin-Opener-Policy');
+  
+  // Permetti il caricamento di moduli ES6
+  if (req.url.endsWith('.js')) {
+    res.setHeader('Access-Control-Allow-Private-Network', 'true');
+  }
   
   next();
 });
@@ -38,6 +40,7 @@ app.use(express.static(path.join(__dirname, 'public'), {
   setHeaders: (res, path) => {
     if (path.endsWith('.js')) {
       res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+      res.removeHeader('Cross-Origin-Resource-Policy');
     }
   }
 }));
