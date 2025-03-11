@@ -55,6 +55,16 @@
 
   <!-- Importazione Three.js e moduli correlati -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.158.0/three.min.js"></script>
+  <script>
+    // Verifica che Three.js sia caricato prima di procedere
+    if (typeof THREE === 'undefined') {
+      console.error('Three.js non è stato caricato correttamente');
+    } else {
+      // Rendi THREE disponibile globalmente
+      window.THREE = THREE;
+      console.log('Three.js caricato con successo');
+    }
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/js/controls/PointerLockControls.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/js/objects/Water.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/js/objects/Sky.js"></script>
@@ -79,8 +89,24 @@
 
     // Verifica il caricamento di Three.js e socket.io
     async function checkDependencies() {
-      if (typeof THREE === 'undefined') {
-        throw new Error('Three.js non è stato caricato');
+      // Verifica Three.js e i suoi moduli
+      const requiredThreeModules = [
+        { name: 'THREE', global: 'THREE' },
+        { name: 'PointerLockControls', path: 'THREE.PointerLockControls' },
+        { name: 'Water', path: 'THREE.Water' },
+        { name: 'Sky', path: 'THREE.Sky' },
+        { name: 'GLTFLoader', path: 'THREE.GLTFLoader' }
+      ];
+
+      for (const module of requiredThreeModules) {
+        try {
+          const obj = module.path ? eval(module.path) : window[module.name];
+          if (!obj) {
+            throw new Error(`${module.name} non è stato caricato`);
+          }
+        } catch (error) {
+          throw new Error(`Errore nel caricamento di ${module.name}: ${error.message}`);
+        }
       }
       
       if (typeof io === 'undefined') {
@@ -130,6 +156,10 @@
         
         document.body.appendChild(script);
         await loaded;
+
+        // Verifica che lo script sia stato caricato correttamente
+        const filename = src.split('/').pop();
+        console.log(`Script ${filename} caricato con successo`);
       } catch (error) {
         throw new Error(`Errore nel caricamento dello script ${src}: ${error.message}`);
       }
