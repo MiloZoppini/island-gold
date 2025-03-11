@@ -235,6 +235,12 @@ class SceneManager {
             }
         }
     }
+
+    async initMap() {
+        const terrainGenerator = new TerrainGenerator();
+        this.map = new Map(this.scene, terrainGenerator);
+        await this.map.initialize();
+    }
 }
 
 // Esponi la classe globalmente

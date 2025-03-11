@@ -52,86 +52,110 @@
     <div id="debug-panel" class="hidden"></div>
   </div>
 
-  <!-- Three.js e librerie correlate -->
+  <!-- Importazione Three.js e moduli correlati -->
   <script type="module">
     import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js';
     import { PointerLockControls } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/controls/PointerLockControls.js';
     import { Water } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/objects/Water.js';
     import { Sky } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/objects/Sky.js';
     import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/loaders/GLTFLoader.js';
-    
-    // Esponi globalmente
+
+    // Esponi Three.js e i suoi moduli globalmente
     window.THREE = THREE;
     window.PointerLockControls = PointerLockControls;
     window.Water = Water;
     window.Sky = Sky;
     window.GLTFLoader = GLTFLoader;
-    
-    // Segnala che Three.js è stato caricato
     window.threeJsLoaded = true;
-    
-    // Carica gli script dopo che Three.js è stato caricato
+  </script>
+
+  <!-- Script di caricamento -->
+  <script>
     function loadScripts() {
       const scripts = [
-        // Socket.io
-        "/socket.io/socket.io.js",
-        
-        // SimplexNoise
-        "https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js",
-        
-        // Core
-        "js/core/EventBus.js",
-        "js/core/InputManager.js",
-        "js/utils/PerformanceMonitor.js",
-        "js/utils/QualitySettings.js",
-        "js/audio/AudioManager.js",
-        "js/ui/UIManager.js",
-        "js/scene/SceneManager.js",
-        "js/scene/Map.js",
-        "js/entities/Player.js",
-        "js/entities/Treasure.js",
-        "js/core/Game.js",
-        
-        // Effects
-        "js/effects/water.js",
-        "js/core/terrain.js",
-        "js/effects/particles.js",
-        
-        // Main - caricato per ultimo
-        "js/main.js"
+        { src: "https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js", module: false },
+        { src: "js/core/EventBus.js", module: true },
+        { src: "js/core/InputManager.js", module: true },
+        { src: "js/utils/PerformanceMonitor.js", module: true },
+        { src: "js/utils/QualitySettings.js", module: true },
+        { src: "js/audio/AudioManager.js", module: true },
+        { src: "js/ui/UIManager.js", module: true },
+        { src: "js/scene/SceneManager.js", module: true },
+        { src: "js/scene/Map.js", module: true },
+        { src: "js/entities/Player.js", module: true },
+        { src: "js/entities/Treasure.js", module: true },
+        { src: "js/core/Game.js", module: true },
+        { src: "js/effects/water.js", module: true },
+        { src: "js/core/terrain.js", module: true },
+        { src: "js/effects/particles.js", module: true },
+        { src: "js/main.js", module: true }
       ];
-      
+
       let loaded = 0;
-      
+      const progressBar = document.querySelector('.loading-progress');
+      const loadingText = document.querySelector('.loading-text');
+
+      function updateProgress() {
+        const progress = (loaded / scripts.length) * 100;
+        progressBar.style.width = `${progress}%`;
+        loadingText.textContent = `Caricamento... ${Math.round(progress)}%`;
+      }
+
       function loadNextScript() {
         if (loaded >= scripts.length) {
           console.log("Tutti gli script sono stati caricati");
+          setTimeout(initializeGame, 500); // Piccolo ritardo per assicurarsi che tutto sia pronto
           return;
         }
+
+        const { src, module } = scripts[loaded];
+        const script = document.createElement("script");
+        script.src = src;
+        script.type = module ? "module" : "text/javascript";
         
-        const script = document.createElement('script');
-        script.src = scripts[loaded];
         script.onload = () => {
           loaded++;
+          updateProgress();
           loadNextScript();
         };
+        
         script.onerror = (error) => {
-          console.error(`Errore nel caricamento dello script: ${scripts[loaded]}`, error);
+          console.error(`Errore nel caricamento dello script: ${src}`, error);
           loaded++;
+          updateProgress();
           loadNextScript();
         };
+        
         document.body.appendChild(script);
       }
-      
+
       loadNextScript();
     }
-    
-    // Carica gli script quando il documento è pronto
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', loadScripts);
-    } else {
-      loadScripts();
+
+    function initializeGame() {
+      if (window.threeJsLoaded && window.Game) {
+        const game = new window.Game(
+          new window.EventBus(),
+          new window.SceneManager(),
+          new window.InputManager(),
+          new window.AudioManager(),
+          new window.UIManager(),
+          new window.PerformanceMonitor(),
+          new window.QualitySettings()
+        );
+        game.init();
+        
+        // Nascondi la schermata di caricamento
+        document.getElementById('loading-screen').classList.add('hidden');
+        // Mostra la schermata iniziale
+        document.getElementById('start-screen').classList.remove('hidden');
+      } else {
+        console.error('Three.js o Game non sono stati caricati correttamente');
+      }
     }
+
+    // Avvia il caricamento degli script quando la pagina è pronta
+    document.addEventListener('DOMContentLoaded', loadScripts);
   </script>
 </body>
 </html> 
