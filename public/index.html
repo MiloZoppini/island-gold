@@ -54,11 +54,14 @@
   </div>
 
   <!-- Importazione Three.js e moduli correlati -->
-  <script async src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
-  <script async src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/controls/PointerLockControls.js"></script>
-  <script async src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/objects/Water.js"></script>
-  <script async src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/objects/Sky.js"></script>
-  <script async src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/loaders/GLTFLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/js/controls/PointerLockControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/js/objects/Water.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/js/objects/Sky.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/js/loaders/GLTFLoader.js"></script>
+  
+  <!-- Socket.io -->
+  <script src="/socket.io/socket.io.js"></script>
 
   <!-- Script di caricamento -->
   <script>
@@ -75,21 +78,21 @@
     function loadScripts() {
       const scripts = [
         { src: "https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js", module: false },
-        { src: "/js/core/EventBus.js", module: true },
-        { src: "/js/core/InputManager.js", module: true },
-        { src: "/js/utils/PerformanceMonitor.js", module: true },
-        { src: "/js/utils/QualitySettings.js", module: true },
-        { src: "/js/audio/AudioManager.js", module: true },
-        { src: "/js/ui/UIManager.js", module: true },
-        { src: "/js/scene/SceneManager.js", module: true },
-        { src: "/js/scene/Map.js", module: true },
-        { src: "/js/entities/Player.js", module: true },
-        { src: "/js/entities/Treasure.js", module: true },
-        { src: "/js/core/Game.js", module: true },
-        { src: "/js/effects/water.js", module: true },
-        { src: "/js/core/terrain.js", module: true },
-        { src: "/js/effects/particles.js", module: true },
-        { src: "/js/main.js", module: true }
+        { src: "/js/core/EventBus.js", module: false },
+        { src: "/js/core/InputManager.js", module: false },
+        { src: "/js/utils/PerformanceMonitor.js", module: false },
+        { src: "/js/utils/QualitySettings.js", module: false },
+        { src: "/js/audio/AudioManager.js", module: false },
+        { src: "/js/ui/UIManager.js", module: false },
+        { src: "/js/scene/SceneManager.js", module: false },
+        { src: "/js/scene/Map.js", module: false },
+        { src: "/js/entities/Player.js", module: false },
+        { src: "/js/entities/Treasure.js", module: false },
+        { src: "/js/core/Game.js", module: false },
+        { src: "/js/effects/water.js", module: false },
+        { src: "/js/core/terrain.js", module: false },
+        { src: "/js/effects/particles.js", module: false },
+        { src: "/js/main.js", module: false }
       ];
 
       let loaded = 0;
@@ -126,7 +129,7 @@
         const { src, module } = scripts[loaded];
         const script = document.createElement("script");
         script.src = src;
-        script.type = module ? "module" : "text/javascript";
+        script.type = "text/javascript";
         
         script.onload = () => {
           console.log(`Script caricato con successo: ${src}`);
@@ -147,14 +150,13 @@
       }
 
       // Aspetta che Three.js sia caricato prima di procedere
-      const checkThreeInterval = setInterval(() => {
-        if (typeof THREE !== 'undefined') {
-          clearInterval(checkThreeInterval);
-          if (checkDependencies()) {
-            loadNextScript();
-          }
+      if (typeof THREE !== 'undefined') {
+        if (checkDependencies()) {
+          loadNextScript();
         }
-      }, 100);
+      } else {
+        logError('Three.js non è stato caricato. Ricarica la pagina.');
+      }
     }
 
     function initializeGame() {
