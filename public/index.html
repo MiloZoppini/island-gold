@@ -54,22 +54,11 @@
   </div>
 
   <!-- Importazione Three.js e moduli correlati -->
-  <script type="module">
-    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js';
-    import { PointerLockControls } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/controls/PointerLockControls.js';
-    import { Water } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/objects/Water.js';
-    import { Sky } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/objects/Sky.js';
-    import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/loaders/GLTFLoader.js';
-
-    // Esponi Three.js e i suoi moduli globalmente
-    window.THREE = THREE;
-    window.PointerLockControls = PointerLockControls;
-    window.Water = Water;
-    window.Sky = Sky;
-    window.GLTFLoader = GLTFLoader;
-    window.threeJsLoaded = true;
-    console.log('Three.js e i suoi moduli sono stati caricati con successo');
-  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+  <script async src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/controls/PointerLockControls.js"></script>
+  <script async src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/objects/Water.js"></script>
+  <script async src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/objects/Sky.js"></script>
+  <script async src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/loaders/GLTFLoader.js"></script>
 
   <!-- Script di caricamento -->
   <script>
@@ -86,21 +75,21 @@
     function loadScripts() {
       const scripts = [
         { src: "https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js", module: false },
-        { src: "js/core/EventBus.js", module: true },
-        { src: "js/core/InputManager.js", module: true },
-        { src: "js/utils/PerformanceMonitor.js", module: true },
-        { src: "js/utils/QualitySettings.js", module: true },
-        { src: "js/audio/AudioManager.js", module: true },
-        { src: "js/ui/UIManager.js", module: true },
-        { src: "js/scene/SceneManager.js", module: true },
-        { src: "js/scene/Map.js", module: true },
-        { src: "js/entities/Player.js", module: true },
-        { src: "js/entities/Treasure.js", module: true },
-        { src: "js/core/Game.js", module: true },
-        { src: "js/effects/water.js", module: true },
-        { src: "js/core/terrain.js", module: true },
-        { src: "js/effects/particles.js", module: true },
-        { src: "js/main.js", module: true }
+        { src: "/js/core/EventBus.js", module: true },
+        { src: "/js/core/InputManager.js", module: true },
+        { src: "/js/utils/PerformanceMonitor.js", module: true },
+        { src: "/js/utils/QualitySettings.js", module: true },
+        { src: "/js/audio/AudioManager.js", module: true },
+        { src: "/js/ui/UIManager.js", module: true },
+        { src: "/js/scene/SceneManager.js", module: true },
+        { src: "/js/scene/Map.js", module: true },
+        { src: "/js/entities/Player.js", module: true },
+        { src: "/js/entities/Treasure.js", module: true },
+        { src: "/js/core/Game.js", module: true },
+        { src: "/js/effects/water.js", module: true },
+        { src: "/js/core/terrain.js", module: true },
+        { src: "/js/effects/particles.js", module: true },
+        { src: "/js/main.js", module: true }
       ];
 
       let loaded = 0;
@@ -114,10 +103,13 @@
       }
 
       function checkDependencies() {
-        if (!window.THREE) {
+        if (typeof THREE === 'undefined') {
           logError('Three.js non è stato caricato correttamente');
           return false;
         }
+        window.THREE = THREE;
+        window.threeJsLoaded = true;
+        console.log('Three.js e i suoi moduli sono stati caricati con successo');
         return true;
       }
 
@@ -154,9 +146,15 @@
         document.body.appendChild(script);
       }
 
-      if (checkDependencies()) {
-        loadNextScript();
-      }
+      // Aspetta che Three.js sia caricato prima di procedere
+      const checkThreeInterval = setInterval(() => {
+        if (typeof THREE !== 'undefined') {
+          clearInterval(checkThreeInterval);
+          if (checkDependencies()) {
+            loadNextScript();
+          }
+        }
+      }, 100);
     }
 
     function initializeGame() {
