@@ -54,13 +54,45 @@
   </div>
 
   <!-- Importazione Three.js e moduli correlati -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.158.0/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/js/controls/PointerLockControls.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/js/objects/Water.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/js/objects/Sky.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/js/loaders/GLTFLoader.js"></script>
   
   <!-- Socket.io -->
+  <script>
+    // Inizializza socket.io con gestione degli errori
+    window.initSocket = function() {
+      try {
+        // Configura socket.io per Render.com
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const host = window.location.hostname;
+        const port = window.location.port || (protocol === 'wss:' ? '443' : '80');
+        
+        window.socket = io(`${protocol}//${host}:${port}`, {
+          transports: ['websocket'],
+          upgrade: false,
+          reconnection: true,
+          reconnectionAttempts: 5,
+          reconnectionDelay: 1000
+        });
+
+        window.socket.on('connect', () => {
+          console.log('Socket.io connesso con successo');
+        });
+
+        window.socket.on('connect_error', (error) => {
+          logError(`Errore di connessione socket.io: ${error.message}`);
+        });
+
+        return true;
+      } catch (error) {
+        logError('Errore durante l\'inizializzazione di socket.io: ' + error.message);
+        return false;
+      }
+    }
+  </script>
   <script src="/socket.io/socket.io.js"></script>
 
   <!-- Script di caricamento -->
@@ -75,102 +107,113 @@
       loadingErrors.appendChild(errorDiv);
     }
 
-    function loadScripts() {
-      const scripts = [
-        { src: "https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js", module: false },
-        { src: "/js/core/EventBus.js", module: false },
-        { src: "/js/core/InputManager.js", module: false },
-        { src: "/js/utils/PerformanceMonitor.js", module: false },
-        { src: "/js/utils/QualitySettings.js", module: false },
-        { src: "/js/audio/AudioManager.js", module: false },
-        { src: "/js/ui/UIManager.js", module: false },
-        { src: "/js/scene/SceneManager.js", module: false },
-        { src: "/js/scene/Map.js", module: false },
-        { src: "/js/entities/Player.js", module: false },
-        { src: "/js/entities/Treasure.js", module: false },
-        { src: "/js/core/Game.js", module: false },
-        { src: "/js/effects/water.js", module: false },
-        { src: "/js/core/terrain.js", module: false },
-        { src: "/js/effects/particles.js", module: false },
-        { src: "/js/main.js", module: false }
-      ];
-
-      let loaded = 0;
-      const progressBar = document.querySelector('.loading-progress');
-      const loadingText = document.querySelector('.loading-text');
-
-      function updateProgress() {
-        const progress = (loaded / scripts.length) * 100;
-        progressBar.style.width = `${progress}%`;
-        loadingText.textContent = `Caricamento... ${Math.round(progress)}%`;
-      }
-
-      function checkDependencies() {
+    // Verifica il caricamento di Three.js e socket.io
+    function checkDependencies() {
+      return new Promise((resolve, reject) => {
         if (typeof THREE === 'undefined') {
-          logError('Three.js non è stato caricato correttamente');
-          return false;
+          reject(new Error('Three.js non è stato caricato'));
+          return;
         }
-        window.THREE = THREE;
-        window.threeJsLoaded = true;
-        console.log('Three.js e i suoi moduli sono stati caricati con successo');
-        return true;
-      }
-
-      function loadNextScript() {
-        if (loaded >= scripts.length) {
-          console.log("Tutti gli script sono stati caricati");
-          if (checkDependencies()) {
-            console.log("Tutte le dipendenze sono state caricate correttamente");
-            setTimeout(initializeGame, 500);
-          }
+        
+        if (typeof io === 'undefined') {
+          reject(new Error('Socket.io non è stato caricato'));
           return;
         }
 
-        const { src, module } = scripts[loaded];
-        const script = document.createElement("script");
-        script.src = src;
-        script.type = "text/javascript";
-        
-        script.onload = () => {
-          console.log(`Script caricato con successo: ${src}`);
-          loaded++;
-          updateProgress();
-          loadNextScript();
-        };
-        
-        script.onerror = (error) => {
-          logError(`Errore nel caricamento dello script: ${src}`);
-          console.error(error);
-          loaded++;
-          updateProgress();
-          loadNextScript();
-        };
-        
-        document.body.appendChild(script);
-      }
-
-      // Aspetta che Three.js sia caricato prima di procedere
-      if (typeof THREE !== 'undefined') {
-        if (checkDependencies()) {
-          loadNextScript();
+        window.THREE = THREE;
+        if (!window.initSocket()) {
+          reject(new Error('Impossibile inizializzare socket.io'));
+          return;
         }
-      } else {
-        logError('Three.js non è stato caricato. Ricarica la pagina.');
+
+        console.log('Tutte le dipendenze caricate con successo');
+        resolve(true);
+      });
+    }
+
+    // Carica uno script con gestione degli errori
+    function loadScript(src) {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error(`Errore nel caricamento: ${src}`));
+        document.body.appendChild(script);
+      });
+    }
+
+    async function loadScripts() {
+      try {
+        await checkDependencies();
+        
+        const scripts = [
+          { src: "https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js" },
+          { src: "/js/core/EventBus.js" },
+          { src: "/js/core/InputManager.js" },
+          { src: "/js/utils/PerformanceMonitor.js" },
+          { src: "/js/utils/QualitySettings.js" },
+          { src: "/js/audio/AudioManager.js" },
+          { src: "/js/ui/UIManager.js" },
+          { src: "/js/scene/SceneManager.js" },
+          { src: "/js/scene/Map.js" },
+          { src: "/js/entities/Player.js" },
+          { src: "/js/entities/Treasure.js" },
+          { src: "/js/core/Game.js" },
+          { src: "/js/effects/water.js" },
+          { src: "/js/core/terrain.js" },
+          { src: "/js/effects/particles.js" },
+          { src: "/js/main.js" }
+        ];
+
+        const progressBar = document.querySelector('.loading-progress');
+        const loadingText = document.querySelector('.loading-text');
+
+        for (let i = 0; i < scripts.length; i++) {
+          try {
+            await loadScript(scripts[i].src);
+            const progress = ((i + 1) / scripts.length) * 100;
+            progressBar.style.width = `${progress}%`;
+            loadingText.textContent = `Caricamento... ${Math.round(progress)}%`;
+          } catch (error) {
+            logError(`Errore nel caricamento dello script ${scripts[i].src}: ${error.message}`);
+          }
+        }
+
+        console.log("Tutti gli script sono stati caricati");
+        setTimeout(initializeGame, 500);
+      } catch (error) {
+        logError(`Errore durante il caricamento: ${error.message}`);
       }
     }
 
     function initializeGame() {
       try {
-        if (!window.threeJsLoaded) {
-          throw new Error("Three.js non è stato caricato correttamente");
-        }
-        if (!window.Game) {
-          throw new Error("La classe Game non è stata caricata correttamente");
+        if (!window.EventBus) {
+          throw new Error("EventBus non è stato caricato correttamente");
         }
         
         console.log("Inizializzazione del gioco...");
+        const eventBus = new window.EventBus();
+        
+        // Verifica che tutte le classi necessarie siano disponibili
+        const requiredClasses = [
+          'SceneManager',
+          'InputManager',
+          'AudioManager',
+          'UIManager',
+          'PerformanceMonitor',
+          'QualitySettings',
+          'Game'
+        ];
+
+        for (const className of requiredClasses) {
+          if (!window[className]) {
+            throw new Error(`La classe ${className} non è stata caricata correttamente`);
+          }
+        }
+
         const game = new window.Game(
-          new window.EventBus(),
+          eventBus,
           new window.SceneManager(),
           new window.InputManager(),
           new window.AudioManager(),
@@ -181,9 +224,7 @@
         
         game.init();
         
-        // Nascondi la schermata di caricamento
         document.getElementById('loading-screen').classList.add('hidden');
-        // Mostra la schermata iniziale
         document.getElementById('start-screen').classList.remove('hidden');
         
         console.log("Gioco inizializzato con successo");
@@ -192,7 +233,6 @@
       }
     }
 
-    // Avvia il caricamento degli script quando la pagina è pronta
     document.addEventListener('DOMContentLoaded', loadScripts);
   </script>
 
